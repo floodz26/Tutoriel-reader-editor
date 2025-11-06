@@ -1,0 +1,162 @@
+{
+  "filename": "heliyourte-complete-doc.json",
+  "version": "1.0.0",
+  "metadata": {
+    "title": "Guide de montage Héliyourte",
+    "description": "Documentation complète pour le montage d'une Héliyourte",
+    "author": "Équipe Héliyourte",
+    "created_date": "2024-01-01T00:00:00Z",
+    "last_modified": "2024-01-01T00:00:00Z",
+    "total_modifications": 0
+  },
+  "modules": {
+    "foundation": {
+      "id": "foundation",
+      "name": "Fondation",
+      "description": "Préparation du terrain et fondation",
+      "icon": "🏗️",
+      "stepsCount": 2,
+      "estimatedTime": "2 heures",
+      "images": []
+    },
+    "structure": {
+      "id": "structure",
+      "name": "Structure portante",
+      "description": "Assemblage de la structure principale",
+      "icon": "🧱",
+      "stepsCount": 3,
+      "estimatedTime": "4 heures",
+      "images": []
+    },
+    "covering": {
+      "id": "covering",
+      "name": "Couverture",
+      "description": "Installation de la couverture thermique",
+      "icon": "☂️",
+      "stepsCount": 2,
+      "estimatedTime": "3 heures",
+      "images": []
+    }
+  },
+  "steps": [
+    {
+      "id": 1,
+      "module": "foundation",
+      "title": "Préparation du terrain",
+      "description": "Nivellement et préparation du sol",
+      "image": "",
+      "instructions": [
+        "Nettoyer la zone de montage",
+        "Vérifier l'horizontalité du terrain",
+        "Marquer le centre de la yourte"
+      ],
+      "tools": ["Niveau à bulle", "Corde", "Pelle"],
+      "materials": ["Piquets", "Corde"],
+      "tips": "Vérifiez toujours deux fois l'horizontalité",
+      "vigilance": "Portez des gants de protection",
+      "nextStep": 2
+    },
+    {
+      "id": 2,
+      "module": "foundation",
+      "title": "Installation de la plateforme",
+      "description": "Pose de la plateforme de base",
+      "image": "",
+      "instructions": [
+        "Positionner la plateforme au centre",
+        "Vérifier l'alignement avec les repères",
+        "Fixer la plateforme"
+      ],
+      "tools": ["Perceuse", "Clé à molette"],
+      "materials": ["Boulons M10", "Rondelles"],
+      "tips": "Travaillez à plusieurs pour manipuler la plateforme",
+      "vigilance": "Attention aux doigts lors de la manipulation",
+      "nextStep": 3
+    },
+    {
+      "id": 3,
+      "module": "structure",
+      "title": "Assemblage du cadre central",
+      "description": "Montage du pilier central",
+      "image": "",
+      "instructions": [
+        "Assembler les parties du pilier central",
+        "Installer le roulement à billes",
+        "Positionner le pilier sur la plateforme"
+      ],
+      "tools": ["Clé dynamométrique", "Niveau laser"],
+      "materials": ["Pilier central", "Roulement à billes"],
+      "tips": "Respectez le couple de serrage spécifié",
+      "vigilance": "Ne pas forcer sur le roulement",
+      "nextStep": 4
+    },
+    {
+      "id": 4,
+      "module": "structure",
+      "title": "Installation des poutres radiales",
+      "description": "Pose des poutres principales",
+      "image": "",
+      "instructions": [
+        "Positionner la première poutre radiale",
+        "Vérifier l'angle d'inclinaison",
+        "Fixer les poutres une par une"
+      ],
+      "tools": ["Échelle", "Clé à pipe"],
+      "materials": ["Poutres radiales", "Fixations"],
+      "tips": "Travaillez en équipe pour maintenir les poutres",
+      "vigilance": "Assurez-vous de la stabilité de l'ensemble",
+      "nextStep": 5
+    },
+    {
+      "id": 5,
+      "module": "structure",
+      "title": "Montage de la couronne périphérique",
+      "description": "Installation de la couronne supérieure",
+      "image": "",
+      "instructions": [
+        "Assembler les segments de couronne",
+        "Positionner la couronne sur les poutres",
+        "Vérifier l'alignement général"
+      ],
+      "tools": ["Grue (optionnel)", "Palan"],
+      "materials": ["Segments de couronne", "Boulons de fixation"],
+      "tips": "Utilisez un dispositif de levage pour les grosses pièces",
+      "vigilance": "Respectez les consignes de levage",
+      "nextStep": 6
+    },
+    {
+      "id": 6,
+      "module": "covering",
+      "title": "Installation de la couverture thermique",
+      "description": "Pose de l'enveloppe isolante",
+      "image": "",
+      "instructions": [
+        "Dérouler la couverture thermique",
+        "Positionner sur la structure",
+        "Fixer selon le sens du vent"
+      ],
+      "tools": ["Échelle", "Agrafes industrielles"],
+      "materials": ["Couverture thermique", "Agrafes"],
+      "tips": "Commencez par le côté opposé au vent dominant",
+      "vigilance": "Attention aux chutes lors du travail en hauteur",
+      "nextStep": 7
+    },
+    {
+      "id": 7,
+      "module": "covering",
+      "title": "Pose de la bâche de protection",
+      "description": "Installation de la couche externe",
+      "image": "",
+      "instructions": [
+        "Positionner la bâche de protection",
+        "Tendre uniformément la bâche",
+        "Fixer avec les sangles de tension"
+      ],
+      "tools": ["Échelle", "Clé à sangle"],
+      "materials": ["Bâche de protection", "Sangles de tension"],
+      "tips": "Vérifiez l'étanchéité des coutures",
+      "vigilance": "Ne pas marcher sur la bâche",
+      "nextStep": ""
+    }
+  ]
+}

@@ -1,0 +1,108 @@
+MÉMO DE DÉVELOPPEMENT - ÉDITEUR HÉLIYOURTE
+CONTEXTE DU PROJET
+Développement d'un éditeur web pour la documentation de montage d'Héliyourte avec les fonctionnalités avancées suivantes :
+- Gestion de modules avec création/suppression/déplacement
+- Gestion d'étapes avec déplacement
+- Système de galerie d'images par module
+- Validation des données
+FICHIER PRINCIPAL
+/Users/apple/heliyourte-editor/index.html - Interface principale de l'éditeur
+STRUCTURE DES DONNÉES
+{
+  modules: {
+    moduleId: {
+      id: string,
+      name: string, 
+      description: string,
+      icon: emoji,
+      stepsCount: number,
+      estimatedTime: string,
+      images: [base64_image_strings]
+    }
+  },
+  steps: [
+    {
+      id: number,
+      module: string,
+      title: string,
+      image: base64_string,
+      // ... autres champs
+    }
+  ]
+}
+FONCTIONNALITÉS IMPLÉMENTÉES
+1. GESTION DES MODULES
+Création :
+- Bouton "Créer un nouveau module" à la fin de la liste
+- Formulaire modal avec nom, description, icône, temps estimé
+- Génération automatique d'ID unique
+Suppression :
+- Bouton 🗑️ sur chaque module
+- Confirmation avant suppression
+- Suppression en cascade des étapes associées
+Réorganisation :
+- Glisser-déposer natif HTML5
+- Réordonnancement visuel immédiat
+- Mise à jour automatique de la structure de données
+2. GESTION DES ÉTAPES
+Réorganisation :
+- Glisser-déposer au sein d'un module
+- Maintien de l'association module-étapes
+- Mise à jour de l'ordre dans les données
+3. SYSTÈME DE GALERIE D'IMAGES
+Stockage :
+- Images stockées dans modules[moduleId].images[]
+- Format base64 pour toutes les images
+- Conservation des images supprimées d'étapes
+Accès :
+- Clic sur image d'étape → ouvre galerie du module
+- Clic sur "Remplacer" → ouvre galerie du module
+- Clic sur "Ajouter une image" → ouvre galerie du module
+Gestion :
+- Remplacement : image précédente reste dans galerie
+- Suppression : image reste dans galerie
+- Ajout : nouvelles images automatiquement dans galerie
+FONCTIONS CLÉS
+Gestion des Modules
+- renderModules() - Affiche modules + bouton création
+- deleteModule(moduleId) - Supprime module et étapes associées
+- openCreateModuleModal() - Ouvre formulaire création
+- createNewModule() - Crée nouveau module
+Glisser-Déposer
+- handleModuleDragStart/Over/Drop/End() - Gestion drag modules
+- handleStepDragStart/Over/Drop/End() - Gestion drag étapes
+Gestion des Images
+- prepareImageReplacement() - Prépare galerie module
+- populateModuleImageGallery() - Affiche images module
+- selectGalleryImage(index) - Sélectionne image galerie
+- confirmImageReplacement() - Applique image sélectionnée
+MODIFICATIONS CSS
+Classes ajoutées :
+- .draggable - Curseur déplacement
+- .drag-over - Style pendant drag
+- .module-delete-btn - Position bouton suppression
+- .module-card-container - Conteneur module
+MODIFICATIONS HTML
+- Ajout modale création module
+- Modification modale remplacement image (galerie)
+- Suppression modale aperçu image simple
+- Ajout boutons suppression modules
+FICHIER DE DONNÉES EXEMPLE
+/Users/apple/heliyourte-editor/sample-data/heliyourte-complete-doc.json
+- Structure mise à jour avec images: [] pour chaque module
+- Compatible avec fonctionnalités implémentées
+NOTES DE DÉVELOPPEMENT
+1. Compatibilité : Toutes les fonctionnalités existantes préservées
+2. Performance : Utilisation d'APIs natives HTML5 (pas de bibliothèque externe)
+3. Sécurité : Validation utilisateur pour opérations destructrices
+4. UX : Feedback visuel immédiat pour toutes les interactions
+PROCHAINE ÉTAPES POSSIBLES
+- Validation des données JSON améliorée
+- Export/import de fichiers
+- Historique des modifications
+- Prévisualisation PDF
+FICHIERS DE SAUVEGARDE
+- /Users/apple/heliyourte-editor/index.html.backup-*
+- /Users/apple/heliyourte-editor/index.html.validation-backup
+---
+Dernière mise à jour : Novembre 2025
