@@ -267,113 +267,149 @@
             border-radius: 3px;
         }
 
-        /* Module Accordion Styles */
-        .module-accordion-item {
-            margin-bottom: 8px;
-            border-radius: 8px;
-            overflow: hidden;
+        /* Module Selector Accordion Styles */
+        #toggleModuleSelector {
+            transition: all 0.2s ease;
+        }
+        #toggleModuleSelector .bi-chevron-down {
+            transition: transform 0.3s ease;
+        }
+        #toggleModuleSelector.open .bi-chevron-down {
+            transform: rotate(180deg);
+        }
+        .module-selector-item {
+            padding: 10px 12px;
             border: 1px solid #dee2e6;
-            transition: all 0.3s ease;
-        }
-        .module-accordion-item:hover {
-            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
-        }
-        .module-header {
-            padding: 12px 15px;
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 6px;
+            margin-bottom: 6px;
             cursor: pointer;
+            transition: all 0.2s ease;
             display: flex;
             align-items: center;
             gap: 12px;
-            transition: all 0.2s ease;
-            user-select: none;
-        }
-        .module-header:hover {
-            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
-        }
-        .module-header.active {
-            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
-            color: white;
-        }
-        .module-icon-compact {
-            font-size: 1.8rem;
-            min-width: 40px;
-            text-align: center;
-        }
-        .module-info {
-            flex: 1;
-            display: none;
-        }
-        .module-header.active .module-info {
-            display: block;
-        }
-        .module-info .module-name {
-            font-weight: 600;
-            font-size: 1.05rem;
-            margin-bottom: 2px;
-        }
-        .module-info .module-desc {
-            font-size: 0.85rem;
-            opacity: 0.9;
-        }
-        .module-chevron {
-            transition: transform 0.3s ease;
-            font-size: 1.2rem;
-            opacity: 0;
-        }
-        .module-header.active .module-chevron {
-            opacity: 1;
-        }
-        .module-header.active.expanded .module-chevron {
-            transform: rotate(90deg);
-        }
-        .module-steps {
-            max-height: 0;
-            overflow: hidden;
-            transition: max-height 0.3s ease;
             background: white;
         }
-        .module-steps.expanded {
-            max-height: 1000px;
-            border-top: 1px solid rgba(0,0,0,0.1);
+        .module-selector-item:hover {
+            background: #f8f9ff;
+            border-color: #007bff;
+            transform: translateX(4px);
         }
-        .module-step-item {
-            padding: 10px 15px;
-            border-bottom: 1px solid #f0f0f0;
-            cursor: pointer;
-            transition: all 0.2s ease;
+        .module-selector-icon {
+            font-size: 1.5rem;
+            min-width: 32px;
+            text-align: center;
+        }
+        .module-selector-name {
+            flex: 1;
+            font-weight: 500;
+            font-size: 0.95rem;
+        }
+
+        /* Selected Module Card Styles */
+        #selectedModuleCard {
+            border: 2px solid #007bff;
+            box-shadow: 0 4px 12px rgba(0,123,255,0.15);
+        }
+        #selectedModuleCard .card-body {
+            padding: 1rem;
+        }
+        .selected-module-header {
             display: flex;
-            align-items: center;
-            gap: 10px;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 12px;
         }
-        .module-step-item:hover {
-            background-color: #f8f9ff;
-            padding-left: 20px;
+        .selected-module-icon {
+            font-size: 3rem;
+            min-width: 50px;
+            text-align: center;
         }
-        .module-step-item.active {
-            background-color: #e7f3ff;
+        .selected-module-info {
+            flex: 1;
+        }
+        .selected-module-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: #007bff;
+            margin-bottom: 6px;
+        }
+        .selected-module-desc {
+            font-size: 0.95rem;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+        .selected-module-meta {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+        .selected-module-actions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+        }
+
+        /* Steps List Styles */
+        .step-card-detailed {
+            padding: 15px;
+            border: 1px solid #dee2e6;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            background: white;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+        .step-card-detailed:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            border-color: #007bff;
+        }
+        .step-card-detailed.active {
             border-left: 4px solid #007bff;
-            font-weight: 600;
+            background: #f8f9ff;
         }
-        .module-step-item:last-child {
-            border-bottom: none;
+        .step-card-header {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            margin-bottom: 10px;
         }
-        .step-number {
+        .step-number-badge {
             background: #007bff;
             color: white;
-            width: 24px;
-            height: 24px;
+            width: 32px;
+            height: 32px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 0.75rem;
-            font-weight: 600;
+            font-size: 0.9rem;
+            font-weight: 700;
             flex-shrink: 0;
         }
-        .step-title-compact {
+        .step-card-content {
             flex: 1;
+        }
+        .step-card-title {
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-bottom: 6px;
+            color: #212529;
+        }
+        .step-card-desc {
             font-size: 0.9rem;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+        .step-card-modified {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #ffc107;
+            font-size: 0.85rem;
+        }
+        .step-card-actions {
+            display: flex;
+            gap: 6px;
+            margin-top: 10px;
         }
 
         /* Image Gallery Bar Styles */
@@ -511,8 +547,37 @@
             <!-- Modules & Steps Sidebar -->
             <div class="col-md-4">
                 <div class="editor-section sticky-sidebar">
-                    <h3 class="mb-3"><i class="bi bi-layers"></i> Navigation</h3>
-                    <div id="modulesAccordion"></div>
+                    <!-- Module Selector Accordion -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="mb-0"><i class="bi bi-layers"></i> Sélectionner un module</h6>
+                            <button class="btn btn-sm btn-outline-primary" id="toggleModuleSelector">
+                                <i class="bi bi-chevron-down" id="selectorChevron"></i>
+                            </button>
+                        </div>
+                        <div id="moduleSelectorAccordion" style="display: none;"></div>
+                    </div>
+
+                    <!-- Selected Module Display -->
+                    <div id="selectedModuleSection" class="mb-3" style="display: none;">
+                        <h6 class="text-muted mb-2">MODULE SÉLECTIONNÉ</h6>
+                        <div id="selectedModuleCard" class="card"></div>
+                    </div>
+
+                    <!-- Steps List -->
+                    <div id="stepsSection" style="display: none;">
+                        <div class="d-flex justify-content-between align-items-center mb-2">
+                            <h6 class="text-muted mb-0">ÉTAPES DU MODULE</h6>
+                        </div>
+                        <div id="stepsList"></div>
+                    </div>
+
+                    <!-- Create Module Button -->
+                    <div class="mt-3 text-center">
+                        <button class="btn btn-outline-primary w-100" onclick="openCreateModuleModal()">
+                            <i class="bi bi-plus-circle"></i> Créer un nouveau module
+                        </button>
+                    </div>
                 </div>
             </div>
 
@@ -802,92 +867,152 @@
             reader.readAsText(file);
         }
 
-        // Render modules list
-        // Render modules as accordion with integrated steps
+        // Render module selector accordion
         function renderModules() {
-            const accordionContainer = document.getElementById('modulesAccordion');
-            accordionContainer.innerHTML = '';
+            const selectorAccordion = document.getElementById('moduleSelectorAccordion');
+            selectorAccordion.innerHTML = '';
+
             if (!currentData || !currentData.modules) return;
 
+            // Populate selector with all modules
             Object.values(currentData.modules).forEach(module => {
-                const moduleSteps = currentData.steps.filter(step => step.module === module.id);
-                const isExpanded = module.id === currentModule;
-
-                const accordionItem = document.createElement('div');
-                accordionItem.className = 'module-accordion-item';
-                accordionItem.setAttribute('data-module-id', module.id);
-
-                // Module header
-                const header = document.createElement('div');
-                header.className = `module-header ${isExpanded ? 'active expanded' : ''}`;
-                header.innerHTML = `
-                    <span class="module-icon-compact">${module.icon}</span>
-                    <div class="module-info">
-                        <div class="module-name">${module.name}</div>
-                        <div class="module-desc">${module.description} • ${module.stepsCount} étapes</div>
-                    </div>
-                    <i class="bi bi-chevron-right module-chevron"></i>
+                const selectorItem = document.createElement('div');
+                selectorItem.className = 'module-selector-item';
+                selectorItem.innerHTML = `
+                    <span class="module-selector-icon">${module.icon}</span>
+                    <span class="module-selector-name">${module.name}</span>
                 `;
-
-                // Click to expand/collapse
-                header.addEventListener('click', () => toggleModule(module.id));
-
-                // Steps container
-                const stepsContainer = document.createElement('div');
-                stepsContainer.className = `module-steps ${isExpanded ? 'expanded' : ''}`;
-
-                if (moduleSteps.length === 0) {
-                    stepsContainer.innerHTML = '<div class="p-3 text-muted text-center"><small>Aucune étape</small></div>';
-                } else {
-                    moduleSteps.forEach(step => {
-                        const stepItem = document.createElement('div');
-                        stepItem.className = `module-step-item ${currentStep && currentStep.id === step.id ? 'active' : ''}`;
-                        stepItem.setAttribute('data-step-id', step.id);
-                        stepItem.innerHTML = `
-                            <div class="step-number">${step.id}</div>
-                            <div class="step-title-compact">${step.title}</div>
-                            ${step.isModified ? '<i class="bi bi-pencil-fill text-warning"></i>' : ''}
-                        `;
-                        stepItem.addEventListener('click', (e) => {
-                            e.stopPropagation();
-                            editStep(step.id);
-                        });
-                        stepsContainer.appendChild(stepItem);
-                    });
-                }
-
-                accordionItem.appendChild(header);
-                accordionItem.appendChild(stepsContainer);
-                accordionContainer.appendChild(accordionItem);
+                selectorItem.addEventListener('click', () => selectModule(module.id));
+                selectorAccordion.appendChild(selectorItem);
             });
 
-            // Add create module button
-            const createBtn = document.createElement('div');
-            createBtn.className = 'mt-3 text-center';
-            createBtn.innerHTML = `
-                <button class="btn btn-outline-primary w-100" onclick="openCreateModuleModal()">
-                    <i class="bi bi-plus-circle"></i> Créer un nouveau module
-                </button>
-            `;
-            accordionContainer.appendChild(createBtn);
+            // Render selected module if any
+            if (currentModule) {
+                renderSelectedModule();
+                renderSteps();
+                renderImageGallery();
+            }
         }
 
-        // Toggle module expansion
-        function toggleModule(moduleId) {
-            const wasExpanded = currentModule === moduleId;
+        // Select a module
+        function selectModule(moduleId) {
+            currentModule = moduleId;
 
-            // Update currentModule
-            currentModule = wasExpanded ? null : moduleId;
+            // Close selector accordion
+            const accordion = document.getElementById('moduleSelectorAccordion');
+            const toggleBtn = document.getElementById('toggleModuleSelector');
+            accordion.style.display = 'none';
+            toggleBtn.classList.remove('open');
 
-            // Re-render to update UI
-            renderModules();
+            // Render the selected module and its steps
+            renderSelectedModule();
+            renderSteps();
+            renderImageGallery();
+        }
 
-            // Update image gallery
-            if (currentModule) {
-                renderImageGallery();
-            } else {
-                document.getElementById('imageGallerySection').style.display = 'none';
+        // Render selected module card
+        function renderSelectedModule() {
+            const section = document.getElementById('selectedModuleSection');
+            const card = document.getElementById('selectedModuleCard');
+
+            if (!currentModule || !currentData.modules[currentModule]) {
+                section.style.display = 'none';
+                return;
             }
+
+            const module = currentData.modules[currentModule];
+            section.style.display = 'block';
+
+            card.innerHTML = `
+                <div class="card-body">
+                    <div class="selected-module-header">
+                        <div class="selected-module-icon">${module.icon}</div>
+                        <div class="selected-module-info">
+                            <div class="selected-module-name">${module.name}</div>
+                            <div class="selected-module-desc">${module.description}</div>
+                            <div class="selected-module-meta">
+                                <i class="bi bi-list-check"></i> ${module.stepsCount} étapes
+                                &nbsp;•&nbsp;
+                                <i class="bi bi-clock"></i> ${module.estimatedTime}
+                            </div>
+                        </div>
+                    </div>
+                    <div class="selected-module-actions">
+                        <button class="btn btn-sm btn-outline-primary" onclick="editModule('${module.id}')">
+                            <i class="bi bi-pencil"></i> Modifier
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteModule('${module.id}')">
+                            <i class="bi bi-trash"></i> Supprimer
+                        </button>
+                    </div>
+                </div>
+            `;
+        }
+
+        // Render steps list
+        function renderSteps() {
+            const section = document.getElementById('stepsSection');
+            const stepsList = document.getElementById('stepsList');
+
+            if (!currentModule || !currentData.steps) {
+                section.style.display = 'none';
+                return;
+            }
+
+            const moduleSteps = currentData.steps.filter(step => step.module === currentModule);
+
+            if (moduleSteps.length === 0) {
+                section.style.display = 'block';
+                stepsList.innerHTML = '<p class="text-muted text-center">Aucune étape dans ce module</p>';
+                return;
+            }
+
+            section.style.display = 'block';
+            stepsList.innerHTML = '';
+
+            moduleSteps.forEach(step => {
+                const stepCard = document.createElement('div');
+                stepCard.className = `step-card-detailed ${currentStep && currentStep.id === step.id ? 'active' : ''}`;
+                stepCard.innerHTML = `
+                    ${step.isModified ? '<div class="step-card-modified"><i class="bi bi-pencil-fill"></i> Modifié</div>' : ''}
+                    <div class="step-card-header">
+                        <div class="step-number-badge">${step.id}</div>
+                        <div class="step-card-content">
+                            <div class="step-card-title">${step.title}</div>
+                            <div class="step-card-desc">${step.description}</div>
+                        </div>
+                    </div>
+                    <div class="step-card-actions">
+                        <button class="btn btn-sm btn-primary" onclick="editStep(${step.id})">
+                            <i class="bi bi-pencil-square"></i> Éditer
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteStep(${step.id})">
+                            <i class="bi bi-trash"></i> Supprimer
+                        </button>
+                    </div>
+                `;
+                stepsList.appendChild(stepCard);
+            });
+        }
+
+        // Toggle module selector visibility
+        document.getElementById('toggleModuleSelector').addEventListener('click', function() {
+            const accordion = document.getElementById('moduleSelectorAccordion');
+            const isOpen = accordion.style.display === 'block';
+
+            if (isOpen) {
+                accordion.style.display = 'none';
+                this.classList.remove('open');
+            } else {
+                accordion.style.display = 'block';
+                this.classList.add('open');
+            }
+        });
+
+        // Edit module (placeholder function)
+        function editModule(moduleId) {
+            // TODO: Implement module editing modal
+            alert('Fonction d\'édition du module à implémenter');
         }
 
         // Render image gallery for current module
@@ -931,17 +1056,6 @@
             });
         }
 
-        // Legacy function for compatibility (no longer used)
-        function selectModule(moduleId) {
-            toggleModule(moduleId);
-        }
-
-        // Legacy function for compatibility (no longer used)
-        function renderSteps() {
-            // This function is now integrated in renderModules()
-            return;
-        }
-
         // Edit step
         function editStep(stepId) {
             currentStep = currentData.steps.find(s => s.id === stepId);
@@ -950,16 +1064,15 @@
             // Update currentModule if needed
             if (currentStep.module !== currentModule) {
                 currentModule = currentStep.module;
+                renderSelectedModule();
+                renderImageGallery();
             }
 
-            // Re-render modules to update highlights
-            renderModules();
+            // Re-render steps to update highlights
+            renderSteps();
 
             // Render editor
             renderStepEditor();
-
-            // Render image gallery
-            renderImageGallery();
         }
 
         // Render step editor
