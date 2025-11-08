@@ -191,6 +191,61 @@
             background-color: #f0f7ff;
             color: #0d6efd;
         }
+
+        /* Calculator Styles */
+        #calculatorCard {
+            box-shadow: 0 4px 12px rgba(0,123,255,0.15);
+            transition: all 0.3s ease;
+        }
+        #calculatorCard:hover {
+            box-shadow: 0 6px 16px rgba(0,123,255,0.25);
+        }
+        #calculatorCard .card-header {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+        }
+        .calculator-results {
+            background-color: #f8f9fa;
+            padding: 15px;
+            border-radius: 8px;
+            margin-top: 10px;
+        }
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-top: 12px;
+        }
+        .result-item {
+            background-color: white;
+            padding: 12px;
+            border-radius: 6px;
+            border-left: 3px solid #28a745;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        .result-label {
+            font-size: 0.85rem;
+            margin-bottom: 4px;
+        }
+        .result-value {
+            font-size: 1.1rem;
+            color: #28a745;
+            transition: all 0.3s ease;
+        }
+        .result-value.updated {
+            animation: pulse 0.3s ease;
+            color: #007bff;
+        }
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+        .calculator-input {
+            font-weight: 500;
+        }
+        .calculator-input:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
+        }
     </style>
 </head>
 <body>
@@ -669,6 +724,12 @@
                 return;
             }
 
+            // Render calculator if present
+            let calculatorHtml = '';
+            if (currentStep.calculator) {
+                calculatorHtml = renderCalculator(currentStep.calculator);
+            }
+
             let imagePreview = '';
             if (currentStep.image && currentStep.image.startsWith('data:image')) {
                 imagePreview = `
@@ -717,7 +778,9 @@
                         </button>
                     </div>
                 </div>
-                
+
+                ${calculatorHtml}
+
                 ${imagePreview}
                 
                 <div class="mb-3">
@@ -782,11 +845,16 @@
             document.getElementById('stepMaterials').addEventListener('input', markAsModified);
             document.getElementById('stepTips').addEventListener('input', markAsModified);
             document.getElementById('stepVigilance').addEventListener('input', markAsModified);
-            
+
             // Add listeners for instruction inputs
             document.querySelectorAll('.instruction-item').forEach(input => {
                 input.addEventListener('input', markAsModified);
             });
+
+            // Attach calculator listeners if calculator exists
+            if (currentStep.calculator) {
+                attachCalculatorListeners();
+            }
         }
 
         // Prepare image replacement
@@ -1569,6 +1637,205 @@
             isModified = false;
             updateModificationStatus();
             alert('Fichier enregistré avec succès !');
+        }
+
+        // ===== CALCULATOR FUNCTIONS =====
+
+        // Build context object from calculator cells
+        function buildCalculatorContext(cells) {
+            const context = {};
+
+            // First, add all input values to context
+            cells.filter(cell => cell.type === 'input').forEach(cell => {
+                context[cell.id] = parseFloat(cell.value) || 0;
+            });
+
+            return context;
+        }
+
+        // Safe evaluation of formulas
+        function safeEval(formula, context) {
+            try {
+                // Create a function with context variables as parameters
+                const params = Object.keys(context);
+                const values = Object.values(context);
+
+                // Add Math object to available functions
+                const fn = new Function(...params, 'Math', `"use strict"; return (${formula});`);
+                return fn(...values, Math);
+            } catch (error) {
+                console.error('Error evaluating formula:', formula, error);
+                return NaN;
+            }
+        }
+
+        // Evaluate all calculator cells
+        function evaluateCalculator(calculator) {
+            if (!calculator || !calculator.cells) return null;
+
+            const results = {};
+            const context = buildCalculatorContext(calculator.cells);
+
+            // Process cells in order, updating context as we go
+            calculator.cells.forEach(cell => {
+                if (cell.type === 'input') {
+                    results[cell.id] = {
+                        type: 'input',
+                        value: parseFloat(cell.value) || 0,
+                        label: cell.label,
+                        unit: cell.unit || ''
+                    };
+                } else if (cell.type === 'formula') {
+                    const value = safeEval(cell.formula, context);
+                    const decimals = cell.decimals !== undefined ? cell.decimals : 2;
+                    const formattedValue = !isNaN(value) ? value.toFixed(decimals) : 'Erreur';
+
+                    results[cell.id] = {
+                        type: 'formula',
+                        value: value,
+                        formattedValue: formattedValue,
+                        label: cell.label,
+                        unit: cell.unit || '',
+                        display: cell.display !== false
+                    };
+
+                    // Add calculated value to context for next formulas
+                    context[cell.id] = value;
+                }
+            });
+
+            return results;
+        }
+
+        // Render calculator in step editor
+        function renderCalculator(calculator) {
+            if (!calculator || !calculator.cells) return '';
+
+            const results = evaluateCalculator(calculator);
+            if (!results) return '';
+
+            const inputCells = calculator.cells.filter(cell => cell.type === 'input');
+            const formulaCells = calculator.cells.filter(cell => cell.type === 'formula' && cell.display !== false);
+
+            let html = `
+                <div class="card border-primary mb-3" id="calculatorCard">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">
+                            <i class="bi bi-calculator"></i> ${calculator.name || 'Calculateur'}
+                        </h5>
+                        ${calculator.description ? `<small>${calculator.description}</small>` : ''}
+                    </div>
+                    <div class="card-body">
+            `;
+
+            // Input section
+            if (inputCells.length > 0) {
+                html += `
+                    <div class="mb-3">
+                        <h6 class="text-primary"><i class="bi bi-pencil-square"></i> Paramètres d'entrée</h6>
+                `;
+
+                inputCells.forEach(cell => {
+                    html += `
+                        <div class="mb-2">
+                            <label class="form-label mb-1">${cell.label}</label>
+                            <div class="input-group input-group-sm">
+                                <input
+                                    type="number"
+                                    class="form-control calculator-input"
+                                    id="calc_${cell.id}"
+                                    value="${cell.value}"
+                                    min="${cell.min || ''}"
+                                    max="${cell.max || ''}"
+                                    step="${cell.step || 'any'}"
+                                    data-cell-id="${cell.id}"
+                                >
+                                ${cell.unit ? `<span class="input-group-text">${cell.unit}</span>` : ''}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `</div>`;
+            }
+
+            // Results section
+            if (formulaCells.length > 0) {
+                html += `
+                    <div class="calculator-results">
+                        <h6 class="text-success"><i class="bi bi-check-circle"></i> Résultats</h6>
+                        <div class="results-grid">
+                `;
+
+                formulaCells.forEach(cell => {
+                    const result = results[cell.id];
+                    html += `
+                        <div class="result-item">
+                            <div class="result-label text-muted small">${cell.label}</div>
+                            <div class="result-value" id="result_${cell.id}">
+                                <strong>${result.formattedValue}</strong> ${result.unit}
+                            </div>
+                        </div>
+                    `;
+                });
+
+                html += `
+                        </div>
+                    </div>
+                `;
+            }
+
+            html += `
+                    </div>
+                </div>
+            `;
+
+            return html;
+        }
+
+        // Update calculator results when inputs change
+        function updateCalculatorResults() {
+            if (!currentStep || !currentStep.calculator) return;
+
+            const calculator = currentStep.calculator;
+
+            // Update cell values from inputs
+            calculator.cells.forEach(cell => {
+                if (cell.type === 'input') {
+                    const input = document.getElementById(`calc_${cell.id}`);
+                    if (input) {
+                        cell.value = parseFloat(input.value) || 0;
+                    }
+                }
+            });
+
+            // Re-evaluate all formulas
+            const results = evaluateCalculator(calculator);
+
+            // Update displayed results
+            calculator.cells.forEach(cell => {
+                if (cell.type === 'formula' && cell.display !== false) {
+                    const resultElement = document.getElementById(`result_${cell.id}`);
+                    if (resultElement && results[cell.id]) {
+                        const result = results[cell.id];
+                        resultElement.innerHTML = `<strong>${result.formattedValue}</strong> ${result.unit}`;
+
+                        // Add animation effect
+                        resultElement.classList.add('updated');
+                        setTimeout(() => resultElement.classList.remove('updated'), 300);
+                    }
+                }
+            });
+        }
+
+        // Attach calculator input listeners
+        function attachCalculatorListeners() {
+            document.querySelectorAll('.calculator-input').forEach(input => {
+                input.addEventListener('input', () => {
+                    updateCalculatorResults();
+                    markAsModified();
+                });
+            });
         }
 
         // Initialize the app

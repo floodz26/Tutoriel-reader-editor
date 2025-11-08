@@ -71,6 +71,79 @@
       "materials": ["Boulons M10", "Rondelles"],
       "tips": "Travaillez à plusieurs pour manipuler la plateforme",
       "vigilance": "Attention aux doigts lors de la manipulation",
+      "calculator": {
+        "name": "Calcul des dimensions de la plateforme",
+        "description": "Calculez les dimensions et matériaux nécessaires selon le diamètre de votre yourte",
+        "cells": [
+          {
+            "id": "diametre",
+            "label": "Diamètre de la yourte",
+            "type": "input",
+            "valueType": "number",
+            "value": 6,
+            "min": 4,
+            "max": 10,
+            "step": 0.5,
+            "unit": "m"
+          },
+          {
+            "id": "marge_securite",
+            "label": "Marge de sécurité",
+            "type": "input",
+            "valueType": "number",
+            "value": 0.3,
+            "min": 0.1,
+            "max": 0.5,
+            "step": 0.1,
+            "unit": "m"
+          },
+          {
+            "id": "diametre_plateforme",
+            "label": "Diamètre de la plateforme",
+            "type": "formula",
+            "formula": "diametre + marge_securite",
+            "unit": "m",
+            "decimals": 2,
+            "display": true
+          },
+          {
+            "id": "rayon",
+            "label": "Rayon",
+            "type": "formula",
+            "formula": "diametre_plateforme / 2",
+            "unit": "m",
+            "decimals": 2,
+            "display": false
+          },
+          {
+            "id": "surface_plateforme",
+            "label": "Surface de la plateforme",
+            "type": "formula",
+            "formula": "Math.PI * rayon * rayon",
+            "unit": "m²",
+            "decimals": 2,
+            "display": true
+          },
+          {
+            "id": "perimetre",
+            "label": "Périmètre",
+            "type": "formula",
+            "formula": "Math.PI * diametre_plateforme",
+            "unit": "m",
+            "decimals": 2,
+            "display": true
+          },
+          {
+            "id": "nb_boulons",
+            "label": "Nombre de boulons M10 nécessaires",
+            "type": "formula",
+            "formula": "Math.ceil(perimetre / 0.5) * 2",
+            "unit": "unités",
+            "decimals": 0,
+            "display": true
+          }
+        ]
+      },
       "nextStep": 3
     },
     {
