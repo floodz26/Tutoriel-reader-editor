@@ -48,8 +48,6 @@
             background: white;
             border-radius: 10px;
             box-shadow: 0 5px 15px rgba(0,0,0,0.05);
-            padding: 2rem;
-            margin-bottom: 2rem;
         }
         .btn-primary {
             background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
@@ -282,7 +280,7 @@
             border: 1px solid #dee2e6;
             border-radius: 6px;
             margin-bottom: 6px;
-            cursor: pointer;
+            cursor: move;
             transition: all 0.2s ease;
             display: flex;
             align-items: center;
@@ -293,6 +291,9 @@
             background: #f8f9ff;
             border-color: #007bff;
             transform: translateX(4px);
+        }
+        .module-selector-item.dragging {
+            opacity: 0.5;
         }
         .module-selector-icon {
             font-size: 1.5rem;
@@ -350,13 +351,14 @@
 
         /* Steps List Styles */
         .step-card-detailed {
-            padding: 15px;
+            padding: 10px;
             border: 1px solid #dee2e6;
             border-radius: 8px;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
             background: white;
             transition: all 0.2s ease;
             position: relative;
+            cursor: move;
         }
         .step-card-detailed:hover {
             box-shadow: 0 4px 12px rgba(0,0,0,0.1);
@@ -365,6 +367,9 @@
         .step-card-detailed.active {
             border-left: 4px solid #007bff;
             background: #f8f9ff;
+        }
+        .step-card-detailed.dragging {
+            opacity: 0.5;
         }
         .step-card-header {
             display: flex;
@@ -513,12 +518,12 @@
         </div>
     </header>
 
-    <div class="container">
+    <div class="container-fluid px-2">
         <!-- File Operations -->
-        <div class="row mb-4">
+        <div class="row mb-2">
             <div class="col-md-12">
                 <div class="card">
-                    <div class="card-body">
+                    <div class="card-body py-2">
                         <div class="d-flex justify-content-between align-items-center">
                             <div>
                                 <input type="file" id="fileInput" accept=".json" class="d-none">
@@ -543,12 +548,12 @@
         </div>
 
         <!-- Main Content -->
-        <div class="row" id="mainContent" style="display: none;">
+        <div class="row gx-2" id="mainContent" style="display: none;">
             <!-- Modules & Steps Sidebar -->
             <div class="col-md-4">
-                <div class="editor-section sticky-sidebar">
+                <div class="editor-section sticky-sidebar p-2">
                     <!-- Module Selector Accordion -->
-                    <div class="mb-3">
+                    <div class="mb-2">
                         <div class="d-flex justify-content-between align-items-center mb-2">
                             <h6 class="mb-0"><i class="bi bi-layers"></i> Sélectionner un module</h6>
                             <button class="btn btn-sm btn-outline-primary" id="toggleModuleSelector">
@@ -559,21 +564,21 @@
                     </div>
 
                     <!-- Selected Module Display -->
-                    <div id="selectedModuleSection" class="mb-3" style="display: none;">
-                        <h6 class="text-muted mb-2">MODULE SÉLECTIONNÉ</h6>
+                    <div id="selectedModuleSection" class="mb-2" style="display: none;">
+                        <h6 class="text-muted mb-1">MODULE SÉLECTIONNÉ</h6>
                         <div id="selectedModuleCard" class="card"></div>
                     </div>
 
                     <!-- Steps List -->
                     <div id="stepsSection" style="display: none;">
-                        <div class="d-flex justify-content-between align-items-center mb-2">
+                        <div class="d-flex justify-content-between align-items-center mb-1">
                             <h6 class="text-muted mb-0">ÉTAPES DU MODULE</h6>
                         </div>
                         <div id="stepsList"></div>
                     </div>
 
                     <!-- Create Module Button -->
-                    <div class="mt-3 text-center">
+                    <div class="mt-2 text-center">
                         <button class="btn btn-outline-primary w-100" onclick="openCreateModuleModal()">
                             <i class="bi bi-plus-circle"></i> Créer un nouveau module
                         </button>
@@ -584,19 +589,19 @@
             <!-- Editor Panel -->
             <div class="col-md-8">
                 <!-- Image Gallery -->
-                <div class="editor-section mb-3" id="imageGallerySection" style="display: none;">
-                    <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="editor-section mb-2 p-2" id="imageGallerySection" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-1">
                         <h6 class="mb-0"><i class="bi bi-images"></i> Galerie du module</h6>
                         <small class="text-muted">Glissez-déposez sur l'étape</small>
                     </div>
                     <div id="imageGalleryBar" class="image-gallery-bar"></div>
                 </div>
 
-                <!-- Step Editor -->
-                <div class="editor-section">
-                    <h3><i class="bi bi-pencil-square"></i> Éditeur</h3>
-                    <div id="stepEditor">
-                        <p class="text-muted text-center">Sélectionnez une étape pour l'éditer</p>
+                <!-- Editor -->
+                <div class="editor-section p-2">
+                    <h3 class="mb-2"><i class="bi bi-pencil-square"></i> Éditeur</h3>
+                    <div id="editorContent">
+                        <p class="text-muted text-center">Sélectionnez un module ou une étape pour l'éditer</p>
                     </div>
                 </div>
             </div>
@@ -739,7 +744,7 @@
         const fileNameSpan = document.getElementById('fileName');
         const mainContent = document.getElementById('mainContent');
         const welcomeMessage = document.getElementById('welcomeMessage');
-        const stepEditor = document.getElementById('stepEditor');
+        const editorContent = document.getElementById('editorContent');
         const modificationStatus = document.getElementById('modificationStatus');
         const newImageInput = document.getElementById('newImageInput');
         const confirmReplaceImage = document.getElementById('confirmReplaceImage');
@@ -878,11 +883,20 @@
             Object.values(currentData.modules).forEach(module => {
                 const selectorItem = document.createElement('div');
                 selectorItem.className = 'module-selector-item';
+                selectorItem.setAttribute('draggable', 'true');
+                selectorItem.setAttribute('data-module-id', module.id);
                 selectorItem.innerHTML = `
                     <span class="module-selector-icon">${module.icon}</span>
                     <span class="module-selector-name">${module.name}</span>
                 `;
                 selectorItem.addEventListener('click', () => selectModule(module.id));
+
+                // Add drag and drop events for modules
+                selectorItem.addEventListener('dragstart', handleModuleDragStart);
+                selectorItem.addEventListener('dragover', handleModuleDragOver);
+                selectorItem.addEventListener('drop', handleModuleDrop);
+                selectorItem.addEventListener('dragend', handleModuleDragEnd);
+
                 selectorAccordion.appendChild(selectorItem);
             });
 
@@ -924,7 +938,7 @@
             section.style.display = 'block';
 
             card.innerHTML = `
-                <div class="card-body">
+                <div class="card-body p-2">
                     <div class="selected-module-header">
                         <div class="selected-module-icon">${module.icon}</div>
                         <div class="selected-module-info">
@@ -938,11 +952,11 @@
                         </div>
                     </div>
                     <div class="selected-module-actions">
-                        <button class="btn btn-sm btn-outline-primary" onclick="editModule('${module.id}')">
-                            <i class="bi bi-pencil"></i> Modifier
+                        <button class="btn btn-sm btn-outline-primary" onclick="editModule('${module.id}')" title="Modifier le module">
+                            <i class="bi bi-pencil"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteModule('${module.id}')">
-                            <i class="bi bi-trash"></i> Supprimer
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteModule('${module.id}')" title="Supprimer le module">
+                            <i class="bi bi-trash"></i>
                         </button>
                     </div>
                 </div>
@@ -970,9 +984,11 @@
             section.style.display = 'block';
             stepsList.innerHTML = '';
 
-            moduleSteps.forEach(step => {
+            moduleSteps.forEach((step, index) => {
                 const stepCard = document.createElement('div');
                 stepCard.className = `step-card-detailed ${currentStep && currentStep.id === step.id ? 'active' : ''}`;
+                stepCard.setAttribute('draggable', 'true');
+                stepCard.setAttribute('data-step-id', step.id);
                 stepCard.innerHTML = `
                     ${step.isModified ? '<div class="step-card-modified"><i class="bi bi-pencil-fill"></i> Modifié</div>' : ''}
                     <div class="step-card-header">
@@ -983,14 +999,21 @@
                         </div>
                     </div>
                     <div class="step-card-actions">
-                        <button class="btn btn-sm btn-primary" onclick="editStep(${step.id})">
-                            <i class="bi bi-pencil-square"></i> Éditer
+                        <button class="btn btn-sm btn-primary" onclick="editStep(${step.id})" title="Éditer l'étape">
+                            <i class="bi bi-pencil-square"></i>
                         </button>
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteStep(${step.id})">
-                            <i class="bi bi-trash"></i> Supprimer
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteStep(${step.id})" title="Supprimer l'étape">
+                            <i class="bi bi-trash"></i>
                         </button>
                     </div>
                 `;
+
+                // Add drag and drop events for steps
+                stepCard.addEventListener('dragstart', handleStepDragStart);
+                stepCard.addEventListener('dragover', handleStepDragOver);
+                stepCard.addEventListener('drop', handleStepDrop);
+                stepCard.addEventListener('dragend', handleStepDragEnd);
+
                 stepsList.appendChild(stepCard);
             });
         }
@@ -1009,10 +1032,100 @@
             }
         });
 
-        // Edit module (placeholder function)
+        // Edit module
         function editModule(moduleId) {
-            // TODO: Implement module editing modal
-            alert('Fonction d\'édition du module à implémenter');
+            const module = currentData.modules[moduleId];
+            if (!module) return;
+
+            // Clear current step
+            currentStep = null;
+
+            // Render module editor
+            renderModuleEditor(module);
+        }
+
+        // Render module editor
+        function renderModuleEditor(module) {
+            editorContent.innerHTML = `
+                <div class="step-header">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h4>Module : ${module.name}</h4>
+                        <button class="btn btn-sm btn-outline-secondary" onclick="cancelEdit()" title="Annuler">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label"><strong>Icône / Emoji</strong></label>
+                    <input type="text" class="form-control" id="moduleIcon" value="${module.icon || ''}" maxlength="2">
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label"><strong>Nom du module</strong></label>
+                    <input type="text" class="form-control" id="moduleName" value="${module.name || ''}">
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label"><strong>Description</strong></label>
+                    <textarea class="form-control" id="moduleDescription" rows="3">${module.description || ''}</textarea>
+                </div>
+
+                <div class="mb-2">
+                    <label class="form-label"><strong>Temps estimé</strong></label>
+                    <input type="text" class="form-control" id="moduleEstimatedTime" value="${module.estimatedTime || ''}">
+                </div>
+
+                <div class="d-grid gap-2">
+                    <button class="btn btn-primary" onclick="saveModuleChanges('${module.id}')">
+                        <i class="bi bi-save"></i> Enregistrer les modifications
+                    </button>
+                </div>
+            `;
+
+            // Add event listeners for real-time updates
+            document.getElementById('moduleIcon').addEventListener('input', markAsModified);
+            document.getElementById('moduleName').addEventListener('input', markAsModified);
+            document.getElementById('moduleDescription').addEventListener('input', markAsModified);
+            document.getElementById('moduleEstimatedTime').addEventListener('input', markAsModified);
+        }
+
+        // Save module changes
+        function saveModuleChanges(moduleId) {
+            const module = currentData.modules[moduleId];
+            if (!module) return;
+
+            module.icon = document.getElementById('moduleIcon').value;
+            module.name = document.getElementById('moduleName').value;
+            module.description = document.getElementById('moduleDescription').value;
+            module.estimatedTime = document.getElementById('moduleEstimatedTime').value;
+
+            // Update module ID if name changed
+            const newId = module.name.toLowerCase().replace(/\s+/g, '-');
+            if (newId !== moduleId && !currentData.modules[newId]) {
+                // Update all steps referencing this module
+                currentData.steps.forEach(step => {
+                    if (step.module === moduleId) {
+                        step.module = newId;
+                    }
+                });
+
+                // Move module to new key
+                currentData.modules[newId] = module;
+                module.id = newId;
+                delete currentData.modules[moduleId];
+                currentModule = newId;
+            }
+
+            markAsModified();
+            renderModules();
+            renderSelectedModule();
+            cancelEdit();
+        }
+
+        // Cancel edit
+        function cancelEdit() {
+            editorContent.innerHTML = '<p class="text-muted text-center">Sélectionnez un module ou une étape pour l\'éditer</p>';
         }
 
         // Render image gallery for current module
@@ -1078,7 +1191,7 @@
         // Render step editor
         function renderStepEditor() {
             if (!currentStep) {
-                stepEditor.innerHTML = '<p class="text-muted text-center">Sélectionnez une étape pour l\'éditer</p>';
+                editorContent.innerHTML = '<p class="text-muted text-center">Sélectionnez une étape pour l\'éditer</p>';
                 return;
             }
 
@@ -1091,34 +1204,34 @@
             let imagePreview = '';
             if (currentStep.image && currentStep.image.startsWith('data:image')) {
                 imagePreview = `
-                    <div class="text-center mb-3" id="imageDropZone">
+                    <div class="text-center mb-2" id="imageDropZone">
                         <img src="${currentStep.image}" class="image-preview mb-2 drop-zone" id="stepImagePreview" alt="Image de l'étape" data-bs-toggle="modal" data-bs-target="#imageReplaceModal" onclick="prepareImageReplacement()">
                         <div>
-                            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#imageReplaceModal" onclick="prepareImageReplacement()">
-                                <i class="bi bi-arrow-repeat"></i> Remplacer
+                            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#imageReplaceModal" onclick="prepareImageReplacement()" title="Remplacer l'image">
+                                <i class="bi bi-arrow-repeat"></i>
                             </button>
-                            <button class="btn btn-outline-danger btn-sm ms-2" onclick="removeImage()">
-                                <i class="bi bi-trash"></i> Supprimer
+                            <button class="btn btn-outline-danger btn-sm ms-2" onclick="removeImage()" title="Supprimer l'image">
+                                <i class="bi bi-trash"></i>
                             </button>
                         </div>
                     </div>
                 `;
             } else if (currentStep.image) {
                 imagePreview = `
-                    <div class="text-center mb-3" id="imageDropZone">
+                    <div class="text-center mb-2" id="imageDropZone">
                         <div class="image-preview d-flex align-items-center justify-content-center bg-light drop-zone" id="stepImagePreview" style="height: 200px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imageReplaceModal" onclick="prepareImageReplacement()">
                             <span class="display-1">${currentStep.image}</span>
                         </div>
                         <div class="mt-2">
-                            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#imageReplaceModal" onclick="prepareImageReplacement()">
-                                <i class="bi bi-arrow-repeat"></i> Remplacer
+                            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#imageReplaceModal" onclick="prepareImageReplacement()" title="Remplacer l'image">
+                                <i class="bi bi-arrow-repeat"></i>
                             </button>
                         </div>
                     </div>
                 `;
             } else {
                 imagePreview = `
-                    <div class="mb-3" id="imageDropZone">
+                    <div class="mb-2" id="imageDropZone">
                         <div class="image-placeholder drop-zone" id="stepImagePreview" data-bs-toggle="modal" data-bs-target="#imageReplaceModal" onclick="prepareImageReplacement()">
                             <i class="bi bi-image" style="font-size: 2rem;"></i>
                             <p class="mt-2 mb-0">Ajouter une image</p>
@@ -1127,12 +1240,12 @@
                 `;
             }
 
-            stepEditor.innerHTML = `
+            editorContent.innerHTML = `
                 <div class="step-header">
                     <div class="d-flex justify-content-between align-items-center">
                         <h4>Étape ${currentStep.id}</h4>
-                        <button class="btn btn-sm btn-outline-danger" onclick="deleteStep(${currentStep.id})">
-                            <i class="bi bi-trash"></i> Supprimer
+                        <button class="btn btn-sm btn-outline-danger" onclick="deleteStep(${currentStep.id})" title="Supprimer l'étape">
+                            <i class="bi bi-trash"></i>
                         </button>
                     </div>
                 </div>
@@ -1140,51 +1253,51 @@
                 ${calculatorHtml}
 
                 ${imagePreview}
-                
-                <div class="mb-3">
+
+                <div class="mb-2">
                     <label class="form-label"><strong>Titre</strong></label>
                     <input type="text" class="form-control" id="stepTitle" value="${currentStep.title || ''}">
                 </div>
-                
-                <div class="mb-3">
+
+                <div class="mb-2">
                     <label class="form-label"><strong>Description</strong></label>
                     <textarea class="form-control" id="stepDescription" rows="3">${currentStep.description || ''}</textarea>
                 </div>
-                
-                <div class="mb-3">
+
+                <div class="mb-2">
                     <label class="form-label"><strong>Instructions</strong></label>
                     <div id="instructionsContainer">
                         ${currentStep.instructions ? currentStep.instructions.map((instruction, index) => `
-                            <div class="input-group mb-2">
+                            <div class="input-group mb-1">
                                 <span class="input-group-text">${index + 1}</span>
                                 <input type="text" class="form-control instruction-item" value="${instruction}" data-index="${index}">
-                                <button class="btn btn-outline-danger" type="button" onclick="removeInstruction(${index})">
+                                <button class="btn btn-outline-danger" type="button" onclick="removeInstruction(${index})" title="Supprimer l'instruction">
                                     <i class="bi bi-trash"></i>
                                 </button>
                             </div>
                         `).join('') : ''}
                     </div>
-                    <button class="btn btn-outline-primary btn-sm mt-2" onclick="addInstruction()">
+                    <button class="btn btn-outline-primary btn-sm mt-1" onclick="addInstruction()">
                         <i class="bi bi-plus"></i> Ajouter une instruction
                     </button>
                 </div>
-                
-                <div class="mb-3">
+
+                <div class="mb-2">
                     <label class="form-label"><strong>Outils</strong></label>
                     <input type="text" class="form-control" id="stepTools" value="${currentStep.tools ? currentStep.tools.join(', ') : ''}">
                 </div>
-                
-                <div class="mb-3">
+
+                <div class="mb-2">
                     <label class="form-label"><strong>Matériaux</strong></label>
                     <input type="text" class="form-control" id="stepMaterials" value="${currentStep.materials ? currentStep.materials.join(', ') : ''}">
                 </div>
-                
-                <div class="mb-3">
+
+                <div class="mb-2">
                     <label class="form-label"><strong>Conseils</strong></label>
                     <textarea class="form-control" id="stepTips" rows="2">${currentStep.tips || ''}</textarea>
                 </div>
-                
-                <div class="mb-3">
+
+                <div class="mb-2">
                     <label class="form-label"><strong>Points de vigilance</strong></label>
                     <textarea class="form-control" id="stepVigilance" rows="2">${currentStep.vigilance || ''}</textarea>
                 </div>
