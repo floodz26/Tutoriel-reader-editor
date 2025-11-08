@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Import Calculateur</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 1200px;
+            margin: 20px auto;
+            padding: 20px;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            font-family: monospace;
+            padding: 10px;
+            margin: 10px 0;
+        }
+        button {
+            background: #007bff;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            cursor: pointer;
+            border-radius: 4px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .result {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        pre {
+            background: #282c34;
+            color: #abb2bf;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+        }
+        .error {
+            background: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .success {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 10px;
+            border-radius: 4px;
+            margin: 10px 0;
+        }
+        .example {
+            background: #fff3cd;
+            padding: 15px;
+            border-radius: 4px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>🧪 Test Import Calculateur LibreOffice</h1>
+
+    <div class="example">
+        <h3>📋 Exemple de données à copier depuis LibreOffice Calc :</h3>
+        <p>Dans LibreOffice Calc, créez un tableau comme ceci :</p>
+        <table border="1" cellpadding="5">
+            <tr>
+                <th>A: Label</th>
+                <th>B: Valeur</th>
+                <th>C: Unité</th>
+                <th>D: Min</th>
+                <th>E: Max</th>
+                <th>F: Step</th>
+            </tr>
+            <tr>
+                <td>Diamètre de la yourte</td>
+                <td>6</td>
+                <td>m</td>
+                <td>4</td>
+                <td>10</td>
+                <td>0.5</td>
+            </tr>
+            <tr>
+                <td>Marge de sécurité</td>
+                <td>0.3</td>
+                <td>m</td>
+                <td>0.1</td>
+                <td>0.5</td>
+                <td>0.1</td>
+            </tr>
+            <tr>
+                <td>Diamètre de la plateforme</td>
+                <td>=B2+B3</td>
+                <td>m</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            <tr>
+                <td>Surface</td>
+                <td>=PI()*(B4/2)^2</td>
+                <td>m²</td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+        </table>
+        <p><strong>Puis sélectionnez toutes les cellules et faites Ctrl+C</strong></p>
+    </div>
+
+    <h3>Collez vos données ici (format TSV) :</h3>
+    <textarea id="tsvInput" placeholder="Label	Valeur	Unité	Min	Max	Step
+Diamètre de la yourte	6	m	4	10	0.5
+Marge de sécurité	0.3	m	0.1	0.5	0.1
+Diamètre de la plateforme	=B2+B3	m
+Surface	=PI()*(B4/2)^2	m²"></textarea>
+
+    <div>
+        <label>Nom du calculateur : <input type="text" id="calcName" value="Calcul de dimensions" style="width: 300px;"></label>
+    </div>
+    <div style="margin-top: 10px;">
+        <label>Description : <input type="text" id="calcDesc" value="Calculez les dimensions nécessaires" style="width: 500px;"></label>
+    </div>
+
+    <button onclick="testImport()">🚀 Importer et convertir</button>
+
+    <div id="results"></div>
+
+    <script src="calculator-import.js"></script>
+    <script>
+        function testImport() {
+            const tsvData = document.getElementById('tsvInput').value;
+            const name = document.getElementById('calcName').value;
+            const description = document.getElementById('calcDesc').value;
+            const resultsDiv = document.getElementById('results');
+
+            if (!tsvData.trim()) {
+                resultsDiv.innerHTML = '<div class="error">❌ Veuillez coller des données TSV</div>';
+                return;
+            }
+
+            try {
+                const importer = new CalculatorImporter();
+                const calculator = importer.importFromSpreadsheet(tsvData, name, description);
+
+                // Validation
+                const validation = importer.validate(calculator);
+
+                let html = '';
+
+                if (!validation.valid) {
+                    html += '<div class="error"><h4>❌ Erreurs de validation :</h4><ul>';
+                    validation.errors.forEach(err => {
+                        html += `<li>${err}</li>`;
+                    });
+                    html += '</ul></div>';
+                } else {
+                    html += '<div class="success">✅ Import réussi !</div>';
+                }
+
+                html += '<div class="result">';
+                html += '<h4>📊 Résultat de l\'import :</h4>';
+                html += `<p><strong>Nom :</strong> ${calculator.name}</p>`;
+                html += `<p><strong>Description :</strong> ${calculator.description}</p>`;
+                html += `<p><strong>Nombre de cellules :</strong> ${calculator.cells.length}</p>`;
+
+                html += '<h5>Cellules :</h5><ul>';
+                calculator.cells.forEach(cell => {
+                    if (cell.type === 'input') {
+                        html += `<li>📝 <strong>${cell.label}</strong> : ${cell.value} ${cell.unit} (min: ${cell.min}, max: ${cell.max}, step: ${cell.step})</li>`;
+                    } else {
+                        html += `<li>🧮 <strong>${cell.label}</strong> : <code>${cell.formula}</code> ${cell.unit}</li>`;
+                    }
+                });
+                html += '</ul></div>';
+
+                html += '<div class="result">';
+                html += '<h4>💾 JSON généré :</h4>';
+                html += '<pre>' + JSON.stringify(calculator, null, 2) + '</pre>';
+                html += '</div>';
+
+                resultsDiv.innerHTML = html;
+
+            } catch (error) {
+                resultsDiv.innerHTML = `<div class="error"><h4>❌ Erreur :</h4><p>${error.message}</p><pre>${error.stack}</pre></div>`;
+            }
+        }
+
+        // Exemple pré-rempli au chargement
+        window.addEventListener('load', () => {
+            // Pré-remplir avec l'exemple
+            const exampleData = `Label\tValeur\tUnité\tMin\tMax\tStep
+Diamètre de la yourte\t6\tm\t4\t10\t0.5
+Marge de sécurité\t0.3\tm\t0.1\t0.5\t0.1
+Diamètre de la plateforme\t=B2+B3\tm
+Rayon\t=B4/2\tm
+Surface de la plateforme\t=PI()*B5^2\tm²
+Périmètre\t=PI()*B4\tm
+Nombre de boulons M10\t=CEIL(B7/0.5)*2\tunités`;
+
+            document.getElementById('tsvInput').value = exampleData;
+            testImport();
+        });
+    </script>
+</body>
+</html>
