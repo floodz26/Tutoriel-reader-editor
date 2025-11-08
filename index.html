@@ -246,6 +246,226 @@
             border-color: #007bff;
             box-shadow: 0 0 0 0.2rem rgba(0,123,255,0.25);
         }
+
+        /* New Layout Styles */
+        .sticky-sidebar {
+            position: sticky;
+            top: 20px;
+            max-height: calc(100vh - 40px);
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #007bff #f0f0f0;
+        }
+        .sticky-sidebar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .sticky-sidebar::-webkit-scrollbar-track {
+            background: #f0f0f0;
+        }
+        .sticky-sidebar::-webkit-scrollbar-thumb {
+            background: #007bff;
+            border-radius: 3px;
+        }
+
+        /* Module Accordion Styles */
+        .module-accordion-item {
+            margin-bottom: 8px;
+            border-radius: 8px;
+            overflow: hidden;
+            border: 1px solid #dee2e6;
+            transition: all 0.3s ease;
+        }
+        .module-accordion-item:hover {
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+        .module-header {
+            padding: 12px 15px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+        .module-header:hover {
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+        }
+        .module-header.active {
+            background: linear-gradient(135deg, #007bff 0%, #0056b3 100%);
+            color: white;
+        }
+        .module-icon-compact {
+            font-size: 1.8rem;
+            min-width: 40px;
+            text-align: center;
+        }
+        .module-info {
+            flex: 1;
+            display: none;
+        }
+        .module-header.active .module-info {
+            display: block;
+        }
+        .module-info .module-name {
+            font-weight: 600;
+            font-size: 1.05rem;
+            margin-bottom: 2px;
+        }
+        .module-info .module-desc {
+            font-size: 0.85rem;
+            opacity: 0.9;
+        }
+        .module-chevron {
+            transition: transform 0.3s ease;
+            font-size: 1.2rem;
+            opacity: 0;
+        }
+        .module-header.active .module-chevron {
+            opacity: 1;
+        }
+        .module-header.active.expanded .module-chevron {
+            transform: rotate(90deg);
+        }
+        .module-steps {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+            background: white;
+        }
+        .module-steps.expanded {
+            max-height: 1000px;
+            border-top: 1px solid rgba(0,0,0,0.1);
+        }
+        .module-step-item {
+            padding: 10px 15px;
+            border-bottom: 1px solid #f0f0f0;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .module-step-item:hover {
+            background-color: #f8f9ff;
+            padding-left: 20px;
+        }
+        .module-step-item.active {
+            background-color: #e7f3ff;
+            border-left: 4px solid #007bff;
+            font-weight: 600;
+        }
+        .module-step-item:last-child {
+            border-bottom: none;
+        }
+        .step-number {
+            background: #007bff;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: 600;
+            flex-shrink: 0;
+        }
+        .step-title-compact {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+
+        /* Image Gallery Bar Styles */
+        .image-gallery-bar {
+            display: flex;
+            gap: 10px;
+            padding: 10px;
+            background: #f8f9fa;
+            border-radius: 8px;
+            overflow-x: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #007bff #e9ecef;
+            min-height: 100px;
+            align-items: center;
+        }
+        .image-gallery-bar::-webkit-scrollbar {
+            height: 6px;
+        }
+        .image-gallery-bar::-webkit-scrollbar-track {
+            background: #e9ecef;
+        }
+        .image-gallery-bar::-webkit-scrollbar-thumb {
+            background: #007bff;
+            border-radius: 3px;
+        }
+        .image-gallery-bar:empty::before {
+            content: "Aucune image dans la galerie du module";
+            color: #6c757d;
+            font-style: italic;
+            margin: auto;
+        }
+        .gallery-thumb {
+            position: relative;
+            flex-shrink: 0;
+            cursor: grab;
+            border-radius: 6px;
+            overflow: hidden;
+            border: 2px solid #dee2e6;
+            transition: all 0.2s ease;
+            background: white;
+        }
+        .gallery-thumb:hover {
+            border-color: #007bff;
+            transform: translateY(-4px);
+            box-shadow: 0 6px 12px rgba(0,123,255,0.3);
+        }
+        .gallery-thumb:active {
+            cursor: grabbing;
+        }
+        .gallery-thumb img {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            display: block;
+        }
+        .gallery-thumb-label {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            font-size: 0.65rem;
+            padding: 2px 4px;
+            text-align: center;
+        }
+
+        /* Drag-and-drop zones */
+        .drop-zone {
+            border: 2px dashed transparent;
+            transition: all 0.2s ease;
+        }
+        .drop-zone.drag-over {
+            border-color: #007bff;
+            background-color: rgba(0,123,255,0.1);
+        }
+        .image-preview {
+            position: relative;
+        }
+        .image-preview.drop-zone.drag-over::after {
+            content: "Déposer l'image ici";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0,123,255,0.9);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 6px;
+            font-weight: 600;
+            pointer-events: none;
+        }
     </style>
 </head>
 <body>
@@ -288,26 +508,26 @@
 
         <!-- Main Content -->
         <div class="row" id="mainContent" style="display: none;">
-            <!-- Modules List -->
+            <!-- Modules & Steps Sidebar -->
             <div class="col-md-4">
-                <div class="editor-section">
-                    <h3><i class="bi bi-list-check"></i> Modules</h3>
-                    <div id="modulesList" class="list-group"></div>
+                <div class="editor-section sticky-sidebar">
+                    <h3 class="mb-3"><i class="bi bi-layers"></i> Navigation</h3>
+                    <div id="modulesAccordion"></div>
                 </div>
             </div>
 
-            <!-- Steps List -->
-            <div class="col-md-4">
-                <div class="editor-section">
-                    <div class="d-flex justify-content-between align-items-center">
-                        <h3><i class="bi bi-card-list"></i> Étapes</h3>
+            <!-- Editor Panel -->
+            <div class="col-md-8">
+                <!-- Image Gallery -->
+                <div class="editor-section mb-3" id="imageGallerySection" style="display: none;">
+                    <div class="d-flex justify-content-between align-items-center mb-2">
+                        <h6 class="mb-0"><i class="bi bi-images"></i> Galerie du module</h6>
+                        <small class="text-muted">Glissez-déposez sur l'étape</small>
                     </div>
-                    <div id="stepsList"></div>
+                    <div id="imageGalleryBar" class="image-gallery-bar"></div>
                 </div>
-            </div>
 
-            <!-- Step Editor -->
-            <div class="col-md-4">
+                <!-- Step Editor -->
                 <div class="editor-section">
                     <h3><i class="bi bi-pencil-square"></i> Éditeur</h3>
                     <div id="stepEditor">
@@ -454,8 +674,6 @@
         const fileNameSpan = document.getElementById('fileName');
         const mainContent = document.getElementById('mainContent');
         const welcomeMessage = document.getElementById('welcomeMessage');
-        const modulesList = document.getElementById('modulesList');
-        const stepsList = document.getElementById('stepsList');
         const stepEditor = document.getElementById('stepEditor');
         const modificationStatus = document.getElementById('modificationStatus');
         const newImageInput = document.getElementById('newImageInput');
@@ -585,122 +803,143 @@
         }
 
         // Render modules list
+        // Render modules as accordion with integrated steps
         function renderModules() {
-            modulesList.innerHTML = '';
+            const accordionContainer = document.getElementById('modulesAccordion');
+            accordionContainer.innerHTML = '';
             if (!currentData || !currentData.modules) return;
 
             Object.values(currentData.modules).forEach(module => {
-                const moduleCard = document.createElement('div');
-                moduleCard.className = 'list-group-item list-group-item-action module-card module-card-container draggable';
-                moduleCard.setAttribute('draggable', 'true');
-                moduleCard.setAttribute('data-module-id', module.id);
-                moduleCard.innerHTML = `
-                    <div class="d-flex align-items-center">
-                        <span class="module-icon">${module.icon}</span>
-                        <div>
-                            <h5 class="mb-1">${module.name}</h5>
-                            <p class="mb-1 text-muted">${module.description}</p>
-                            <small>${module.stepsCount} étapes - ${module.estimatedTime}</small>
-                        </div>
-                        <button class="btn btn-sm btn-outline-danger module-delete-btn" onclick="deleteModule('${module.id}'); event.stopPropagation();">
-                            <i class="bi bi-trash"></i>
-                        </button>
+                const moduleSteps = currentData.steps.filter(step => step.module === module.id);
+                const isExpanded = module.id === currentModule;
+
+                const accordionItem = document.createElement('div');
+                accordionItem.className = 'module-accordion-item';
+                accordionItem.setAttribute('data-module-id', module.id);
+
+                // Module header
+                const header = document.createElement('div');
+                header.className = `module-header ${isExpanded ? 'active expanded' : ''}`;
+                header.innerHTML = `
+                    <span class="module-icon-compact">${module.icon}</span>
+                    <div class="module-info">
+                        <div class="module-name">${module.name}</div>
+                        <div class="module-desc">${module.description} • ${module.stepsCount} étapes</div>
                     </div>
+                    <i class="bi bi-chevron-right module-chevron"></i>
                 `;
-                moduleCard.addEventListener('click', () => selectModule(module.id));
-                
-                // Add drag and drop events
-                moduleCard.addEventListener('dragstart', handleModuleDragStart);
-                moduleCard.addEventListener('dragover', handleModuleDragOver);
-                moduleCard.addEventListener('drop', handleModuleDrop);
-                moduleCard.addEventListener('dragend', handleModuleDragEnd);
-                
-                modulesList.appendChild(moduleCard);
+
+                // Click to expand/collapse
+                header.addEventListener('click', () => toggleModule(module.id));
+
+                // Steps container
+                const stepsContainer = document.createElement('div');
+                stepsContainer.className = `module-steps ${isExpanded ? 'expanded' : ''}`;
+
+                if (moduleSteps.length === 0) {
+                    stepsContainer.innerHTML = '<div class="p-3 text-muted text-center"><small>Aucune étape</small></div>';
+                } else {
+                    moduleSteps.forEach(step => {
+                        const stepItem = document.createElement('div');
+                        stepItem.className = `module-step-item ${currentStep && currentStep.id === step.id ? 'active' : ''}`;
+                        stepItem.setAttribute('data-step-id', step.id);
+                        stepItem.innerHTML = `
+                            <div class="step-number">${step.id}</div>
+                            <div class="step-title-compact">${step.title}</div>
+                            ${step.isModified ? '<i class="bi bi-pencil-fill text-warning"></i>' : ''}
+                        `;
+                        stepItem.addEventListener('click', (e) => {
+                            e.stopPropagation();
+                            editStep(step.id);
+                        });
+                        stepsContainer.appendChild(stepItem);
+                    });
+                }
+
+                accordionItem.appendChild(header);
+                accordionItem.appendChild(stepsContainer);
+                accordionContainer.appendChild(accordionItem);
             });
-            
+
             // Add create module button
-            const createModuleBtn = document.createElement('div');
-            createModuleBtn.className = 'list-group-item list-group-item-action text-center';
-            createModuleBtn.innerHTML = `
+            const createBtn = document.createElement('div');
+            createBtn.className = 'mt-3 text-center';
+            createBtn.innerHTML = `
                 <button class="btn btn-outline-primary w-100" onclick="openCreateModuleModal()">
                     <i class="bi bi-plus-circle"></i> Créer un nouveau module
                 </button>
             `;
-            modulesList.appendChild(createModuleBtn);
+            accordionContainer.appendChild(createBtn);
         }
 
-        // Select module and render its steps
-        function selectModule(moduleId) {
-            currentModule = moduleId;
-            renderSteps();
-            // Highlight selected module
-            document.querySelectorAll('.module-card').forEach(card => {
-                card.classList.remove('active');
-            });
-            event.currentTarget.classList.add('active');
+        // Toggle module expansion
+        function toggleModule(moduleId) {
+            const wasExpanded = currentModule === moduleId;
+
+            // Update currentModule
+            currentModule = wasExpanded ? null : moduleId;
+
+            // Re-render to update UI
+            renderModules();
+
+            // Update image gallery
+            if (currentModule) {
+                renderImageGallery();
+            } else {
+                document.getElementById('imageGallerySection').style.display = 'none';
+            }
         }
 
-        // Render steps for current module
-        function renderSteps() {
-            stepsList.innerHTML = '';
-            if (!currentData || !currentData.steps) return;
+        // Render image gallery for current module
+        function renderImageGallery() {
+            const gallerySection = document.getElementById('imageGallerySection');
+            const galleryBar = document.getElementById('imageGalleryBar');
 
-            const moduleSteps = currentData.steps.filter(step => step.module === currentModule);
-            
-            if (moduleSteps.length === 0) {
-                stepsList.innerHTML = '<p class="text-muted">Aucune étape dans ce module</p>';
+            if (!currentModule || !currentData.modules[currentModule]) {
+                gallerySection.style.display = 'none';
                 return;
             }
 
-            const stepsContainer = document.createElement('div');
-            stepsContainer.className = 'list-group';
+            const module = currentData.modules[currentModule];
+            galleryBar.innerHTML = '';
 
-            moduleSteps.forEach(step => {
-                const stepCard = document.createElement('div');
-                stepCard.className = 'list-group-item list-group-item-action step-card position-relative draggable';
-                stepCard.setAttribute('draggable', 'true');
-                stepCard.setAttribute('data-step-id', step.id);
-                
-                if (step.isModified) {
-                    stepCard.innerHTML = `
-                        <div class="position-relative">
-                            <div class="modified-indicator">MODIFIÉ</div>
-                            <div class="step-actions">
-                                <button class="btn btn-sm btn-outline-danger" onclick="deleteStep(${step.id}); event.stopPropagation();">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </div>
-                            <h6 class="mb-1">${step.title}</h6>
-                            <p class="mb-1 text-muted">${step.description}</p>
-                            <small>Étape ${step.id}</small>
-                        </div>
-                    `;
-                } else {
-                    stepCard.innerHTML = `
-                        <div class="position-relative">
-                            <div class="step-actions">
-                                <button class="btn btn-sm btn-outline-danger" onclick="deleteStep(${step.id}); event.stopPropagation();">
-                                    <i class="bi bi-trash"></i>
-                                </button>
-                            </div>
-                            <h6 class="mb-1">${step.title}</h6>
-                            <p class="mb-1 text-muted">${step.description}</p>
-                            <small>Étape ${step.id}</small>
-                        </div>
-                    `;
-                }
-                
-                // Add drag and drop events
-                stepCard.addEventListener('dragstart', handleStepDragStart);
-                stepCard.addEventListener('dragover', handleStepDragOver);
-                stepCard.addEventListener('drop', handleStepDrop);
-                stepCard.addEventListener('dragend', handleStepDragEnd);
-                
-                stepCard.addEventListener('click', () => editStep(step.id));
-                stepsContainer.appendChild(stepCard);
+            if (!module.images || module.images.length === 0) {
+                gallerySection.style.display = 'none';
+                return;
+            }
+
+            gallerySection.style.display = 'block';
+
+            module.images.forEach((imageData, index) => {
+                const thumb = document.createElement('div');
+                thumb.className = 'gallery-thumb';
+                thumb.setAttribute('draggable', 'true');
+                thumb.setAttribute('data-image-index', index);
+                thumb.innerHTML = `
+                    <img src="${imageData}" alt="Image ${index + 1}">
+                    <div class="gallery-thumb-label">Image ${index + 1}</div>
+                `;
+
+                // Drag start
+                thumb.addEventListener('dragstart', (e) => {
+                    e.dataTransfer.effectAllowed = 'copy';
+                    e.dataTransfer.setData('image-data', imageData);
+                    e.dataTransfer.setData('image-index', index);
+                });
+
+                galleryBar.appendChild(thumb);
             });
+        }
 
-            stepsList.appendChild(stepsContainer);
+        // Legacy function for compatibility (no longer used)
+        function selectModule(moduleId) {
+            toggleModule(moduleId);
+        }
+
+        // Legacy function for compatibility (no longer used)
+        function renderSteps() {
+            // This function is now integrated in renderModules()
+            return;
         }
 
         // Edit step
@@ -708,13 +947,19 @@
             currentStep = currentData.steps.find(s => s.id === stepId);
             if (!currentStep) return;
 
+            // Update currentModule if needed
+            if (currentStep.module !== currentModule) {
+                currentModule = currentStep.module;
+            }
+
+            // Re-render modules to update highlights
+            renderModules();
+
+            // Render editor
             renderStepEditor();
-            
-            // Highlight selected step
-            document.querySelectorAll('.step-card').forEach(card => {
-                card.classList.remove('active');
-            });
-            event.currentTarget.classList.add('active');
+
+            // Render image gallery
+            renderImageGallery();
         }
 
         // Render step editor
@@ -733,8 +978,8 @@
             let imagePreview = '';
             if (currentStep.image && currentStep.image.startsWith('data:image')) {
                 imagePreview = `
-                    <div class="text-center mb-3">
-                        <img src="${currentStep.image}" class="image-preview mb-2" alt="Image de l'étape" data-bs-toggle="modal" data-bs-target="#imageReplaceModal" onclick="prepareImageReplacement()">
+                    <div class="text-center mb-3" id="imageDropZone">
+                        <img src="${currentStep.image}" class="image-preview mb-2 drop-zone" id="stepImagePreview" alt="Image de l'étape" data-bs-toggle="modal" data-bs-target="#imageReplaceModal" onclick="prepareImageReplacement()">
                         <div>
                             <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#imageReplaceModal" onclick="prepareImageReplacement()">
                                 <i class="bi bi-arrow-repeat"></i> Remplacer
@@ -747,8 +992,8 @@
                 `;
             } else if (currentStep.image) {
                 imagePreview = `
-                    <div class="text-center mb-3">
-                        <div class="image-preview d-flex align-items-center justify-content-center bg-light" style="height: 200px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imageReplaceModal" onclick="prepareImageReplacement()">
+                    <div class="text-center mb-3" id="imageDropZone">
+                        <div class="image-preview d-flex align-items-center justify-content-center bg-light drop-zone" id="stepImagePreview" style="height: 200px; cursor: pointer;" data-bs-toggle="modal" data-bs-target="#imageReplaceModal" onclick="prepareImageReplacement()">
                             <span class="display-1">${currentStep.image}</span>
                         </div>
                         <div class="mt-2">
@@ -760,8 +1005,8 @@
                 `;
             } else {
                 imagePreview = `
-                    <div class="mb-3">
-                        <div class="image-placeholder" data-bs-toggle="modal" data-bs-target="#imageReplaceModal" onclick="prepareImageReplacement()">
+                    <div class="mb-3" id="imageDropZone">
+                        <div class="image-placeholder drop-zone" id="stepImagePreview" data-bs-toggle="modal" data-bs-target="#imageReplaceModal" onclick="prepareImageReplacement()">
                             <i class="bi bi-image" style="font-size: 2rem;"></i>
                             <p class="mt-2 mb-0">Ajouter une image</p>
                         </div>
@@ -855,6 +1100,43 @@
             if (currentStep.calculator) {
                 attachCalculatorListeners();
             }
+
+            // Attach drag-and-drop listeners for image zone
+            setupImageDropZone();
+        }
+
+        // Setup drag-and-drop for image zone
+        function setupImageDropZone() {
+            const dropZone = document.getElementById('stepImagePreview');
+            if (!dropZone) return;
+
+            dropZone.addEventListener('dragover', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.add('drag-over');
+            });
+
+            dropZone.addEventListener('dragleave', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.remove('drag-over');
+            });
+
+            dropZone.addEventListener('drop', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                dropZone.classList.remove('drag-over');
+
+                // Get image data from drag event
+                const imageData = e.dataTransfer.getData('image-data');
+                if (imageData) {
+                    // Update step image
+                    currentStep.image = imageData;
+                    markAsModified();
+                    renderStepEditor();
+                    renderModules(); // Update modified indicator
+                }
+            });
         }
 
         // Prepare image replacement
