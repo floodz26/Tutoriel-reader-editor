@@ -725,6 +725,54 @@
         </div>
     </div>
 
+    <!-- Modal for Calculator Import -->
+    <div class="modal fade" id="calculatorImportModal" tabindex="-1">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">🧮 Importer un calculateur depuis LibreOffice</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="alert alert-info">
+                        <strong>📋 Instructions :</strong>
+                        <ol class="mb-0">
+                            <li>Dans LibreOffice Calc, créez votre tableau avec les colonnes : Label, Valeur, Unité, Min, Max, Step</li>
+                            <li>Utilisez des formules dans la colonne "Valeur" (ex: =B2+B3, =PI()*B5^2)</li>
+                            <li>Sélectionnez toutes les cellules et copiez (Ctrl+C)</li>
+                            <li>Collez les données ci-dessous</li>
+                        </ol>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Nom du calculateur</strong></label>
+                        <input type="text" class="form-control" id="calcImportName" placeholder="Ex: Calcul de dimensions">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Description</strong></label>
+                        <input type="text" class="form-control" id="calcImportDesc" placeholder="Ex: Calculez les dimensions nécessaires">
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label"><strong>Données TSV (copiées depuis LibreOffice)</strong></label>
+                        <textarea class="form-control font-monospace" id="calcImportTSV" rows="10" placeholder="Label	Valeur	Unité	Min	Max	Step
+Diamètre	6	m	4	10	0.5
+Surface	=PI()*(B2/2)^2	m²"></textarea>
+                        <div class="form-text">Collez les données copiées depuis LibreOffice (format TSV avec tabulations)</div>
+                    </div>
+
+                    <div id="calcImportResult"></div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Annuler</button>
+                    <button type="button" class="btn btn-primary" id="previewCalculator">Prévisualiser</button>
+                    <button type="button" class="btn btn-success" id="confirmImportCalculator" style="display: none;">Ajouter à l'étape</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script>
@@ -1301,7 +1349,30 @@
                     <label class="form-label"><strong>Points de vigilance</strong></label>
                     <textarea class="form-control" id="stepVigilance" rows="2">${currentStep.vigilance || ''}</textarea>
                 </div>
-                
+
+                <div class="mb-3 mt-3">
+                    <label class="form-label"><strong>🧮 Calculateur</strong></label>
+                    <div id="calculatorManagement">
+                        ${currentStep.calculator ? `
+                            <div class="alert alert-success d-flex align-items-center justify-content-between">
+                                <span><i class="bi bi-check-circle"></i> Calculateur présent : "${currentStep.calculator.name}"</span>
+                                <div>
+                                    <button class="btn btn-sm btn-outline-primary me-1" onclick="editCalculator()" title="Modifier le calculateur">
+                                        <i class="bi bi-pencil"></i>
+                                    </button>
+                                    <button class="btn btn-sm btn-outline-danger" onclick="removeCalculator()" title="Supprimer le calculateur">
+                                        <i class="bi bi-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        ` : `
+                            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="modal" data-bs-target="#calculatorImportModal">
+                                <i class="bi bi-plus-circle"></i> Ajouter un calculateur
+                            </button>
+                        `}
+                    </div>
+                </div>
+
                 <div class="d-grid gap-2">
                     <button class="btn btn-primary" onclick="saveStepChanges()">
                         <i class="bi bi-save"></i> Enregistrer les modifications
@@ -1904,6 +1975,130 @@
             alert('Module créé avec succès !');
         }
 
+        // Calculator import functions
+        let importedCalculator = null;
+
+        document.getElementById('previewCalculator')?.addEventListener('click', previewCalculator);
+        document.getElementById('confirmImportCalculator')?.addEventListener('click', confirmImportCalculator);
+
+        function previewCalculator() {
+            const tsvData = document.getElementById('calcImportTSV').value;
+            const name = document.getElementById('calcImportName').value.trim();
+            const description = document.getElementById('calcImportDesc').value.trim();
+            const resultDiv = document.getElementById('calcImportResult');
+
+            if (!tsvData.trim()) {
+                resultDiv.innerHTML = '<div class="alert alert-danger">❌ Veuillez coller des données TSV</div>';
+                return;
+            }
+
+            if (!name) {
+                resultDiv.innerHTML = '<div class="alert alert-danger">❌ Veuillez entrer un nom pour le calculateur</div>';
+                return;
+            }
+
+            try {
+                const importer = new CalculatorImporter();
+                const calculator = importer.importFromSpreadsheet(tsvData, name, description);
+
+                // Validate
+                const validation = importer.validate(calculator);
+
+                let html = '';
+
+                if (!validation.valid) {
+                    html += '<div class="alert alert-danger"><h6>❌ Erreurs de validation :</h6><ul class="mb-0">';
+                    validation.errors.forEach(err => {
+                        html += `<li>${err}</li>`;
+                    });
+                    html += '</ul></div>';
+                    document.getElementById('confirmImportCalculator').style.display = 'none';
+                } else {
+                    html += '<div class="alert alert-success">✅ Import réussi ! Prévisualisation :</div>';
+                    html += '<div class="card"><div class="card-body">';
+                    html += renderCalculator(calculator);
+                    html += '</div></div>';
+
+                    // Store the imported calculator
+                    importedCalculator = calculator;
+                    document.getElementById('confirmImportCalculator').style.display = 'inline-block';
+                }
+
+                resultDiv.innerHTML = html;
+
+                // Attach calculator listeners for the preview
+                if (validation.valid) {
+                    attachCalculatorListeners();
+                }
+
+            } catch (error) {
+                resultDiv.innerHTML = `<div class="alert alert-danger"><h6>❌ Erreur :</h6><p>${error.message}</p></div>`;
+                document.getElementById('confirmImportCalculator').style.display = 'none';
+            }
+        }
+
+        function confirmImportCalculator() {
+            if (!importedCalculator || !currentStep) {
+                alert('Erreur : pas de calculateur importé ou pas d\'étape sélectionnée');
+                return;
+            }
+
+            // Add calculator to current step
+            currentStep.calculator = importedCalculator;
+
+            // Mark as modified
+            markAsModified();
+
+            // Re-render the step editor
+            showStepEditor(currentStep.id);
+
+            // Close modal
+            const modal = bootstrap.Modal.getInstance(document.getElementById('calculatorImportModal'));
+            modal.hide();
+
+            // Clear form
+            document.getElementById('calcImportTSV').value = '';
+            document.getElementById('calcImportName').value = '';
+            document.getElementById('calcImportDesc').value = '';
+            document.getElementById('calcImportResult').innerHTML = '';
+            document.getElementById('confirmImportCalculator').style.display = 'none';
+            importedCalculator = null;
+
+            alert('✅ Calculateur ajouté avec succès !');
+        }
+
+        function removeCalculator() {
+            if (!currentStep) return;
+
+            if (confirm('Êtes-vous sûr de vouloir supprimer ce calculateur ?')) {
+                delete currentStep.calculator;
+                markAsModified();
+                showStepEditor(currentStep.id);
+            }
+        }
+
+        function editCalculator() {
+            if (!currentStep || !currentStep.calculator) return;
+
+            // Open the import modal with current calculator data
+            const modal = new bootstrap.Modal(document.getElementById('calculatorImportModal'));
+
+            // Pre-fill the form (we don't have the original TSV, so we'll just allow re-import)
+            document.getElementById('calcImportName').value = currentStep.calculator.name || '';
+            document.getElementById('calcImportDesc').value = currentStep.calculator.description || '';
+
+            // Show a message about editing
+            document.getElementById('calcImportResult').innerHTML = `
+                <div class="alert alert-warning">
+                    <strong>Mode édition</strong><br>
+                    Pour modifier le calculateur, collez de nouvelles données TSV et prévisualisez.
+                    Le calculateur actuel sera remplacé.
+                </div>
+            `;
+
+            modal.show();
+        }
+
         // Drag and drop functions for modules
         let draggedModule = null;
 
@@ -2351,5 +2546,8 @@
             console.log('Éditeur Héliyourte initialisé');
         });
     </script>
+
+    <!-- Calculator Import Module -->
+    <script src="calculator-import.js"></script>
 </body>
 </html>
